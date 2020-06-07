@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="kolonial",
-    version="0.0.1",
+    version="0.0.2",
     author="Fredrik Haarstad",
     author_email="codemonkey@zomg.no",
     description="Python wrapper for the Kolonial.no API",
@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/frefrik/python-kolonial",
     packages=setuptools.find_packages(),
-    install_requires=['requests', 'logging'],
+    install_requires=['requests'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

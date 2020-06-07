@@ -3,6 +3,11 @@ Python wrapper for the [Kolonial.no API](https://github.com/kolonialno/api-docs)
 
 # Installation
 
+Using **Python >= 3.6**:
+
+```
+$ pip install git+https://github.com/frefrik/python-kolonial.git
+```
 
 ### Example usage
 

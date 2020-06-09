@@ -156,7 +156,24 @@ class Kolonial(object):
 
         return results
 
-    def add_to_cart(self, items=None):
+    def modify_cart(self, items=None):
+        """
+        Add or remove products to/from your cart.
+        The quantity field adjusts the quantity currently in the cart.
+
+        Parameters:
+            - items - json-array of items to add. For example:
+                {
+                    "items": [{
+                        "product_id": 9329,
+                        "quantity": 2,
+                    }, {
+                        "product_id": 15163,
+                        "quantity": 1
+                    }]
+                }
+        
+        """
         if items:
             results = self._post('cart/items/', payload=items)
         else:

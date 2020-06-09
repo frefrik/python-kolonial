@@ -1,7 +1,6 @@
 import os
 import requests
 import logging
-import pathlib
 import json
 from http.cookiejar import MozillaCookieJar
 

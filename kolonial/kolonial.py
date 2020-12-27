@@ -30,7 +30,10 @@ class Kolonial(object):
             'X-Client-Token': token
         }
 
-        self.auth = '{"username": "%s", "password": "%s" }' % (username, password)
+        self.auth = {
+            'username': username,
+            'password': password
+        }
         
         self._session()
 
@@ -43,7 +46,7 @@ class Kolonial(object):
             pass
 
     def _login(self):
-        self._post('user/login/', payload=self.auth)
+        self._post('user/login/', payload=json.dumps(self.auth))
 
         self.cj.save(ignore_discard=True, ignore_expires=True)
 
@@ -67,8 +70,7 @@ class Kolonial(object):
             except (ValueError, KeyError):
                 msg = "Error"
 
-            logger.error('Error: %s - %s',
-                         response.status_code, msg)
+            logger.error(f'Error: {response.status_code} - {msg}')
             return None
 
     def _get(self, endpoint):
@@ -95,7 +97,7 @@ class Kolonial(object):
         
         """
         if product_category_id:
-            results = self._get('productcategories/%s/' % (product_category_id))
+            results = self._get(f'productcategories/{product_category_id}/')
         else:
             results = 'Usage: product_category(product_category_id)'
 
@@ -110,7 +112,7 @@ class Kolonial(object):
         
         """
         if product_id:
-            results = self._get('products/%s/' % (product_id))
+            results = self._get(f'products/{product_id}/')
         else:
             results = 'Usage: product(product_id)'
 
@@ -124,7 +126,7 @@ class Kolonial(object):
             - query - the search query
         
         """
-        results = self._get('search/?q=%s' % (query))
+        results = self._get(f'search/?q={query}')
 
         return results
 
@@ -137,7 +139,7 @@ class Kolonial(object):
         
         """
         if query:
-            results = self._get('search/recipes/?q=%s' % (query))
+            results = self._get(f'search/recipes/?q={query}')
         else:
             results = 'Usage: search_recipe(query)'
         
@@ -160,7 +162,7 @@ class Kolonial(object):
             - recipe_tag_id - the id of the recipe tag
         
         """
-        results = self._get('recipe-tags/%s/' % (recipe_tag_id))
+        results = self._get(f'recipe-tags/{recipe_tag_id}/')
 
         return results
 
@@ -182,7 +184,7 @@ class Kolonial(object):
         
         """
         if recipe_id:
-            results = self._get('recipes/%s/' % (recipe_id))
+            results = self._get(f'recipes/{recipe_id}/')
         else:
             results = 'Usage: recipe(recipe_id)'
 
@@ -215,7 +217,7 @@ class Kolonial(object):
         
         """
         if recipe_id:
-            results = self._post('recipes/%s/like-toggle/' % (recipe_id))
+            results = self._post(f'recipes/{recipe_id}/like-toggle/')
         else:
             results = 'Usage: recipe_like(recipe_id)'
         

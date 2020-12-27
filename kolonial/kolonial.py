@@ -54,8 +54,9 @@ class Kolonial(object):
     def _internal_call(self, method, endpoint, payload=None):
         url = self.base_url + endpoint
 
+        response = self.session.request(method, url, data=payload)
+
         try:
-            response = self.session.request(method, url, data=payload)
             response.raise_for_status()
 
             if response.status_code == 404:

@@ -6,6 +6,7 @@ from http.cookiejar import MozillaCookieJar
 
 logger = logging.getLogger(__name__)
 
+
 class Kolonial(object):
     """
     Class for accessing Kolonial.no API.
@@ -34,7 +35,7 @@ class Kolonial(object):
             'username': username,
             'password': password
         }
-        
+
         self._session()
 
     def _session(self):
@@ -63,7 +64,7 @@ class Kolonial(object):
             results = response.json()
 
             return results
-            
+
         except requests.exceptions.HTTPError:
             try:
                 msg = response.json()['detail']
@@ -71,6 +72,7 @@ class Kolonial(object):
                 msg = "Error"
 
             logger.error(f'Error: {response.status_code} - {msg}')
+
             return None
 
     def _get(self, endpoint):
@@ -85,7 +87,7 @@ class Kolonial(object):
 
         """
         results = self._get('productcategories/')
-        
+
         return results
 
     def product_category(self, product_category_id=None):
@@ -94,7 +96,7 @@ class Kolonial(object):
 
         Parameters:
             - product_category_id - the id of the product category
-        
+
         """
         if product_category_id:
             results = self._get(f'productcategories/{product_category_id}/')
@@ -109,7 +111,7 @@ class Kolonial(object):
 
         Parameters:
             - product_id - the id of the product
-        
+
         """
         if product_id:
             results = self._get(f'products/{product_id}/')
@@ -124,7 +126,7 @@ class Kolonial(object):
 
         Parameters:
             - query - the search query
-        
+
         """
         results = self._get(f'search/?q={query}')
 
@@ -136,13 +138,13 @@ class Kolonial(object):
 
         Parameters:
             - query - the search query
-        
+
         """
         if query:
             results = self._get(f'search/recipes/?q={query}')
         else:
             results = 'Usage: search_recipe(query)'
-        
+
         return results
 
     def recipe_tags(self):
@@ -160,7 +162,7 @@ class Kolonial(object):
 
         Parameters:
             - recipe_tag_id - the id of the recipe tag
-        
+
         """
         results = self._get(f'recipe-tags/{recipe_tag_id}/')
 
@@ -181,7 +183,7 @@ class Kolonial(object):
 
         Parameters:
             - recipe_id - the id of the recipe
-        
+
         """
         if recipe_id:
             results = self._get(f'recipes/{recipe_id}/')
@@ -214,13 +216,13 @@ class Kolonial(object):
 
         Parameters:
             - recipe_id - the id of the recipe
-        
+
         """
         if recipe_id:
             results = self._post(f'recipes/{recipe_id}/like-toggle/')
         else:
             results = 'Usage: recipe_like(recipe_id)'
-        
+
         return results
 
     def cart(self):
@@ -248,13 +250,13 @@ class Kolonial(object):
                         "quantity": 1
                     }]
                 }
-        
+
         """
         if items:
             results = self._post('cart/items/', payload=items)
         else:
             results = 'Usage: add_to_cart(items)'
-        
+
         return results
 
     def clear_cart(self):

@@ -68,11 +68,11 @@ class Kolonial(object):
 
         except requests.exceptions.HTTPError:
             try:
-                msg = response.json()['detail']
+                msg = response.json()['errors'][0]
             except (ValueError, KeyError):
                 msg = "Error"
 
-            logger.error(f'Error: {response.status_code} - {msg}')
+            logger.error(f'Error {response.status_code} - {msg}')
 
             return None
 
@@ -81,6 +81,9 @@ class Kolonial(object):
 
     def _post(self, endpoint, payload=None):
         return self._internal_call('POST', endpoint, payload)
+
+    def _delete(self, endpoint):
+        return self._internal_call('DELETE', endpoint)
 
     def product_categories(self):
         """
@@ -266,5 +269,159 @@ class Kolonial(object):
 
         """
         results = self._post('cart/clear/')
+
+        return results
+
+    def product_lists(self):
+        """
+        List all product lists.
+
+        """
+        results = self._get('product-lists/')
+
+        return results
+
+    def product_list(self, id=None):
+        """
+        Show product list items/details.
+
+        Parameters:
+            - id - product-list id
+
+        """
+        if id:
+            results = self._get(f'product-lists/{id}/')
+        else:
+            results = 'Usage: product_list(id)'
+
+        return results
+
+    def product_list_suggestions(self, id=None, limit=10, offset=0):
+        """
+        Get list of product suggestions from product list.
+
+        Parameters:
+            - id - product-list id
+            - offset - (default: 0)
+            - limit  - (default: 10)
+
+        """
+
+        if id:
+            results = self._get(f'product-lists/{id}/suggestions/?limit={limit}&offset={offset}')
+        else:
+            results = 'Usage: product_list_suggestions(id, limit, offset)'
+
+        return results
+
+    def new_product_list(self, title=None, description=None):
+        """
+        Create new product list.
+
+        Parameters:
+            - title - product-list title
+            - description - product-list description
+
+        """
+
+        payload = {
+            'title': title,
+            'description': description
+        }
+
+        if title and description:
+            results = self._post('product-lists/', payload=json.dumps(payload))
+        else:
+            results = 'Usage: new_product_list(title, description)'
+
+        return results
+
+    def modify_product_list(self, id=None, title=None, description=None):
+        """
+        Change title and/or description of product list.
+
+        Parameters:
+            - id - product-list id
+            - title - product-list title
+            - description - product list description (optional)
+
+        """
+        payload = {}
+
+        if title:
+            payload['title'] = title
+        if description:
+            payload['description'] = description
+
+        if id and title:
+            results = self._post(f'product-lists/{id}/', payload=json.dumps(payload))
+        else:
+            results = 'Usage: modify_product_list(id, title, description)'
+
+        return results
+
+    def delete_product_list(self, id=None):
+        """
+        Delete an existing product list.
+
+        Parameters:
+            - id - product-list id
+
+        """
+        if id:
+            results = self._delete(f'product-lists/{id}/')
+        else:
+            results = 'Usage: delete_product_list(id)'
+
+        return results
+
+    def add_to_product_list(self, id=None, product_id=None, quantity=1):
+        """
+        Add new product to list.
+
+        Parameters:
+            - id - product-list id
+            - product_id - product id
+            - quantity - quantity (default: 1)
+
+        """
+        payload = {
+            'items': [
+                {}
+            ]
+        }
+
+        if id and product_id:
+            payload['items'][0]['product_id'] = product_id
+            payload['items'][0]['quantity'] = quantity
+
+            results = self._post(f'product-lists/{id}/products/', payload=json.dumps(payload))
+        else:
+            results = 'Usage: add_to_product_list(id, product_id, quantity)'
+
+        return results
+
+    def remove_from_product_list(self, id=None, product_id=None):
+        """
+        Remove product from list.
+
+        Parameters:
+            - id - product-list id
+            - product_id - product id
+
+        """
+        payload = {
+            'items': [
+                {}
+            ]
+        }
+
+        if id and product_id:
+            payload['items'][0]['product_id'] = product_id
+            payload['items'][0]['delete'] = True
+
+            results = self._post(f'product-lists/{id}/products/', payload=json.dumps(payload))
+        else:
+            results = 'Usage: remove_from_product_list(id, product_id)'
 
         return results
